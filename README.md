@@ -1,22 +1,20 @@
-Version 2 is released!
-=======
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.semsamot/actionbar-rtlizer/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/info.semsamot/actionbar-rtlizer)
 
 ActionBar RTLizer (ActionBar RTL Arranger)
 ================
 
-A library that can RTLize android `ActionBar`!
+A library that can RTLize android's `ActionBar`!
 
 It is not a custom `ActionBar` or anything else!
-Its only a piece of code that can re-arrange the android `ActionBar` in RTL direction.
+Its only a piece of code that can re-arrange the android's `ActionBar` in RTL direction.
 
 Announcement
 ================
-ActionBarRTLizer v2 has arrived!  
+ActionBarRTLizer v2 is released!  
 Fully compatible with API Level 7+ and all issues has been solved!  
 Based on a new Amazaing Library -> Rtlize Everything(coming soon)!  
 
-Usage (only 3 simple steps)
+Usage (only 2 simple steps)
 ================
 **1)** Add this line to `build.gradle` file inside your app project folder:
 ```groovy
@@ -28,51 +26,44 @@ dependencies {
 }
 ```
 
-**2)** Define a private variable of `ActionBarRtlizer` class in your activity class.
+**2)** In `onCreateOptionsMenu` method of your activity, before `return` statement, add these lines:
 
 ```java
-private ActionBarRtlizer rtlizer;
-```
+ActionBarRtlizer rtlizer = new ActionBarRtlizer(this);
+ViewGroup homeView = (ViewGroup) rtlizer.getHomeView();
 
-**3)** In `onCreateOptionsMenu` method of your activity, before `return` statement, add these lines:
+RtlizeEverything.rtlize(rtlizer.getActionBarView());
 
-```java
-rtlizer = new ActionBarRtlizer(this);
-ViewGroup actionBarView = rtlizer.getActionBarView();
-ViewGroup homeView = (ViewGroup)rtlizer.findViewByClass("HomeView", actionBarView);
+if (rtlizer.getHomeViewContainer() instanceof ViewGroup) {
+    RtlizeEverything.rtlize((ViewGroup) rtlizer.getHomeViewContainer());
+}
 
-rtlizer.flipActionBarUpIconIfAvailable(homeView);
-RtlizeEverything.rtlize(actionBarView);
 RtlizeEverything.rtlize(homeView);
+rtlizer.flipActionBarUpIconIfAvailable(homeView);
 ```
 
 Then compile your app and enjoy of this awesome RTLization!
 
+Also see this gist for a sample:
+https://gist.github.com/semsamot/11fc8d69bdcc0e5cd20a#file-ab_rtlizer_fragment_menu_sample-java
+
 Alternative features
 ================
-You can retrieve `ActionBarView`, `ActionMenuView` and `HomeView` after RTLization has been completed.
+You can retrieve `ActionBarView`, `ActionMenuView` and `HomeView` from an instance of `ActionBarRtlizer` class.
 Fortunately you can listen for RTLization completed event.
 
-An example of using these features is that you can animate ActionBar menu items after RTLization. it's so simple! (see the below sample)
+An example of using these features is that you can animate ActionBar menu items. it's so simple! (see the below sample)
 
- ** doesn't work on v2+ yet. **
 ```java
-rtlizer.setOnRtlizeFinishedListener(new ActionBarRtlizer.OnRtlizeFinishedListener() {
-    @Override
-    public void onRtlizeFinished()
-    {
-        Animation rotateAnim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-        View actionMenuItem = rtlizer.getActionMenuView().findViewById(
-                R.id.action_item);
-        actionMenuItem.setAnimation(rotateAnim);
-    }
-});
+Animation rotateAnim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
+View actionMenuItem = rtlizer.getActionMenuView().findViewById(
+        R.id.action_item);
+actionMenuItem.setAnimation(rotateAnim);
 ```
 
 Provided methods for retrieving ActionBar view and its children:
 
 ```java
-// All return value types are of ViewGroup class.
 getActionBarView()
 getHomeViewContainer() // returns null on lower API versions than 17
 getHomeView()
